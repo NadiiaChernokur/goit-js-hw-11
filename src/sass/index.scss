@@ -1,2 +1,41 @@
 @import './common';
 @import './example';
+.info {
+    background-color: rgba(139, 238, 215, 0.22);;
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+   box-shadow: 0 5px 5px rgba(46, 235, 191, 0.25), 0 5px 5px rgba(4, 167, 96, 0.22);
+}
+
+.info-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.gallery {
+   
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+[name="searchQuery"] {
+display: inline-block;
+margin-top: 20px;
+margin-bottom: 20px;
+margin-left: 40%;
+padding: 7px;
+background-color: rgb(40, 235, 66);
+
+}
+.load-more {
+padding: 10px 30px;
+font-size: 26px;
+color: rgb(230, 245, 23);
+background-color: blue;
+margin-left: 40%;
+margin-top: 20px;
+margin-bottom: 20px;
+
+}
