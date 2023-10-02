@@ -8,15 +8,12 @@ const gallery = document.querySelector(".gallery");
 const loadMore = document.querySelector(".load-more")
 
 
-
 form.addEventListener("submit",  onFormSubmit)
 loadMore.addEventListener("click", toloadMore); 
 form.addEventListener("change",  cleanMarkup)
 
 let length = 40;
 const newsApiService = new NewsApiService();
-
-
 
 
 //   По результатам запиту на сервер показуємо картинки на сторінці
