@@ -5,6 +5,7 @@ export default class NewsApiService {
     constructor () {
         this.inputValues = "";
         this.page = 1;
+       
     }
     requestToServer() {
         
@@ -27,8 +28,8 @@ export default class NewsApiService {
                 return data.data
               
               }) 
-  
 }
+
 incrementPage() {
     this.page += 1;
 }

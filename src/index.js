@@ -1,7 +1,7 @@
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import NewsApiService from "./cat-api"
+import NewsApiService from "./photos-api"
 
 const form = document.querySelector(".search-form");
 const gallery = document.querySelector(".gallery");
@@ -16,18 +16,32 @@ let length = 40;
 const newsApiService = new NewsApiService();
 
 
+
 //   По результатам запиту на сервер показуємо картинки на сторінці
     async function onFormSubmit(event) {
        
         event.preventDefault();
-        newsApiService.query = event.currentTarget.elements.searchQuery.value;
-        
+        newsApiService.query = event.currentTarget.elements.searchQuery.value.trim();
+
+        if(newsApiService.query === "") {
+          Notiflix.Notify.info("Введіть щось нормальне");
+          return
+        }
+       
         try {
             const fetch = await newsApiService.requestToServer();
+            const totalPages = Math.ceil(fetch.totalHits / 40);
             const fetchResalt = await createMarkup(fetch);
-            newsApiService.incrementPage();
-             return fetchResalt;
-           
+          
+            if(newsApiService.page >= totalPages) {
+              loadMore.setAttribute("hidden", "")
+              Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+              return
+            }
+
+             newsApiService.incrementPage();
+            return   fetchResalt;
+       
         } catch {
             console.error()
         }
@@ -39,15 +53,22 @@ const newsApiService = new NewsApiService();
         try {
             const toFetchNewPhotos = await newsApiService.requestToServer();
             const newPhotos = await createMarkup(toFetchNewPhotos);
-           
+            const totalPages = Math.ceil(toFetchNewPhotos.totalHits / 40);
+                
+                if(newsApiService.page >= totalPages) {
+                  loadMore.setAttribute("hidden", "")
+                  Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+                  return
+                }
+
                 newsApiService.incrementPage();
-            
                 length += 40;
+
                 if(length >= toFetchNewPhotos.totalHits) {
                     loadMore.setAttribute("hidden", "")
                     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-                  
              }
+
                 Notiflix.Notify.success(`Hooray! We ${length} images.`);
                 
              return newPhotos
@@ -58,21 +79,22 @@ const newsApiService = new NewsApiService();
 
 // Функція зміни запиту
       function  cleanMarkup(){
+        newsApiService.page = 1
         loadMore.setAttribute("hidden", "")
         gallery.innerHTML = "";
 
       }
 
-
+      
 // Створюємо розмітку!
   function createMarkup(objects) {
     const oneCopys = objects.hits;
-    
+   
     if (oneCopys.length === 0) {
         Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
         return
     }
-    loadMore.removeAttribute("hidden", "")
+       loadMore.removeAttribute("hidden", "")
         oneCopys.map(({webformatURL, tags, likes, views, comments, downloads,}) => {
             gallery.insertAdjacentHTML("beforeEnd", `  <a> <div class="photo-card">
            
@@ -98,7 +120,7 @@ const newsApiService = new NewsApiService();
             </div>
           </div>  </a>`)
         })
-        
+      
     };
 
     
